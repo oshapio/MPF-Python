@@ -1,19 +1,23 @@
 import copy
 
 import Constants
-
-
 class Word:
     def __init__(self, b, i, j, a):
         self.beta = b
         self.i = i
         self.j = j
         self.alpha = a
+    def max(self):
+        return max(self.beta, self.i, self.j, self.alpha)
 
     def get_lambda(self):
-        return self.i + self.alpha - self.j - self.beta
-
+        return self.beta + self.j- self.i - self.alpha
+    def get_miu(self):
+        return (self.beta + self.i + self.j + self.alpha) % (2 * Constants.REDUCTION_P)
     def print(self):
+        return "[" + str(self.beta) + ", " + str(self.i) + ", " +  str(self.j) + ", " + str(self.alpha) + "]"
+
+    def __str__(self):
         return "[" + str(self.beta) + ", " + str(self.i) + ", " +  str(self.j) + ", " + str(self.alpha) + "]"
 
     def reduce_two(self, j, i, mode=0):
