@@ -2,7 +2,7 @@ import random
 
 from MPFFuns import circulant, MPF
 from Utils.generators import generate_anticirculant_rand_word_mat
-from Utils.words_matrices_utils import pwords
+from Utils.words_matrices_utils import pwords, get_lambda_mat, plambda
 from Word import Word as Wo
 W = [
 [Wo(0, 15, 24, 0 ), Wo( 1, 29, 18, 0 ), Wo(0, 8, 13, 0 ), Wo( 0, 16, 9, 0 )],
@@ -24,5 +24,6 @@ Y = circulant([0, 0, 8, 8])
 
 
 res = MPF(X,W,Y)
-print()
-pwords(res)
+
+print("Deltas -> ")
+pwords(plambda(res))
