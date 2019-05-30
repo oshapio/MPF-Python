@@ -2,18 +2,16 @@ import glob
 import os
 import pickle
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 def get_approx_matrices_count(m, L_prk):
     return (L_prk**m - (L_prk - 1) ** m - L_prk) ** 2
 
-plt.rcParams['text.usetex'] = True
-plt.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}'] #for \text command
+plt.rcParams.update({'font.size': 30})
+# plt.rcParams.update({'axes.labelsize': 20})
 
+plt.rc('text', usetex=True)
 
     # read limit 5 and limit 8 results and produce plots
-sns.set_style("ticks")
-sns.set_context("talk")
 def read_folder(folder_path):
     os.chdir(folder_path)
 
@@ -28,7 +26,7 @@ def read_folder(folder_path):
 # 5 limit data
 data_5 = read_folder(r"C:\Users\a\Documents\projects\MPF-Python\Experiments\FullProbability\Results\Limit5")
 # display results
-figs, axes = plt.subplots(2,2,figsize=(14,7))
+figs, axes = plt.subplots(2,2,figsize=(14,7),sharey=True, sharex=True)
 iter = 0
 
 for i in range(len(data_5)):
@@ -42,11 +40,21 @@ for i in range(len(data_5)):
 
     y,x=i//2,i%2
     axes[y,x].bar(data_5[i][0]["bins"][1:-29],data_5[i][0]["hist_count"][1:-28], yerr=stds[1:-28])
-    axes[y,x].set_title("$Order(W) = {}$".format(2+i))
-    axes[y,x].set_xlabel("Count of public keys that are being mapped by private keys $x$ times")
-    axes[y,x].set_ylabel("$P(x)$")
+    axes[y,x].set_title("$m = {}$".format(2+i))
+
     axes[y,x].grid(alpha=0.3)
-    axes[y,x].set_ylim((0,1.1))
+    axes[y, x].set_ylim((0, 1.1))
+    axes[y, x].set_xlim((0, 5))
+
+
+axes[1,1].set_xlabel("$x$")
+axes[1,0].set_xlabel("$x$")
+axes[0,0].set_ylabel("$P(x)$")
+axes[1,0].set_ylabel("$P(x)$")
+
+
+# figs.xlabel("Count of public keys that are being mapped by private keys $x$ times")
+# figs.ylabel("$P(x)$")
 plt.subplots_adjust(hspace=0.9)
 plt.tight_layout()
 

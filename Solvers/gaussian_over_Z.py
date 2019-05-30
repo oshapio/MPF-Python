@@ -1,10 +1,25 @@
-from fractions import gcd
-
-
+import math
+from fractions import gcd as mathgcd
+import numpy as np
+def numpy_set_gcd(a):
+    gcd = a[0]
+    for i in a[1:]:
+        if i != 0:
+            gcd = i
+            break
+    for i in a[1:]:
+        if i == 0:
+            continue
+        gcd = mathgcd(abs(i), abs(gcd))
+        if gcd == 1:
+            return 1
+    if math.isnan(gcd):
+        return 1
+    return max(1,gcd)
 def solve_linsys_Z(sys, b):
     # let's solve it
 
-    for iter in range(3):#sys.shape[0]):
+    for iter in range(8):#sys.shape[0]):
         # check if swap is needed
         if sys[iter,iter] == 0:
             # swap quickly
@@ -17,11 +32,13 @@ def solve_linsys_Z(sys, b):
                 raise Exception("Whole {} column is populated with zeros! Exiting".format(iter))
 
             sys[[swap_index,iter]] = sys[[iter, swap_index]]
-        for i in range(4):#sys.shape[0]):
-            if i == iter:
+        for i in range(8):#sys.shape[0]):
+            if i == iter or sys[i,iter] == 0:
                 continue
-            multiplier =  (sys[i,iter] * sys[iter,iter]) #// gcd(sys[i,iter], sys[iter,iter])
-            sys[i] = (multiplier // sys[i, iter]) * sys[i] -  (multiplier // sys[iter, iter]) * sys[iter]
+            sys[i] = (sys[i, iter]) * sys[iter] - (sys[iter, iter]) * sys[i]
+            set_gcd = numpy_set_gcd(sys[i])
+            sys[i] /= set_gcd
+
     return sys
 
 

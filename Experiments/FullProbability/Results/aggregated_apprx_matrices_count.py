@@ -2,18 +2,20 @@ import glob
 import os
 import pickle
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 import numpy as np
 def get_approx_matrices_count(m, L_prk):
-    return (L_prk**m - (L_prk - 1) ** m - L_prk) ** 2
+    # return (L_prk**m - (L_prk - 1) ** m - L_prk) ** 2
+    return (L_prk**m - (L_prk - 1) ** m ) ** 2
 
-plt.rcParams['text.usetex'] = True
-plt.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}'] #for \text command
+plt.rcParams.update({'font.size': 26})
+plt.rc('text', usetex=True)
 
+# plt.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}'] #for \text command
 
     # read limit 5 and limit 8 results and produce plots
-sns.set_style("ticks")
-sns.set_context("talk")
+# sns.set_style("ticks")
+# sns.set_context("talk")
 def read_folder(folder_path):
     os.chdir(folder_path)
 
@@ -75,32 +77,42 @@ for i in range(len(data_8)):
     # axes.set_title("(W) = {}$".format(2+i))
 
 axes.set_xticks(range(2,6))
+colors = ["#e6194b", "#3cb44b"]
+axes.semilogy(order[::-1],means,'.--', color=colors[0],label="Mean empirical count, $L_{PrK} = 5$", alpha=0.5)
+axes.semilogy(order[::-1], upper_bound,'.-', color=colors[0],label="Upper bound, $L_{PrK} = 5$")
+axes.fill_between(order[::-1],means,np.array(upper_bound), color=colors[0],alpha=0.1)
 
-axes.semilogy(order[::-1],means,label="Mean count of appropriate matrices, $L_{PrK} = 5$")
-axes.semilogy(order[::-1], upper_bound, label="Upper bound of appropriate matrices, $L_{PrK} = 5$")
-#axes.fill_between(order[::-1],means,np.array(upper_bound), label="Difference of numerical and analytical estimations with $L_{PrK} = 5$",alpha=0.1)
-
-axes.semilogy(order8[::-1],means8,label="Mean count of appropriate matrices, $L_{PrK} = 8$")
-axes.semilogy(order8[::-1], upper_bound8, label="Upper bound of appropriate matrices, $L_{PrK} = 8$")
-#axes.fill_between(order8[::-1],means8,np.array(upper_bound8), label="Difference of numerical and analytical estimations with $L_{PrK} = 8$",alpha=0.1)
+axes.semilogy(order8[::-1],means8,'x--',color=colors[1],label="Mean emprical count, $L_{PrK} = 8$", alpha=0.5)
+axes.semilogy(order8[::-1], upper_bound8, 'x-',color=colors[1],label="Upper bound, $L_{PrK} = 8$")
+axes.fill_between(order8[::-1],means8,np.array(upper_bound8),  color=colors[1],alpha=0.1)
 
 
-axes.set_xlabel("$Order(W), x$")
+axes.set_xlabel("$m$")
 axes.set_ylabel("$C(x)$")
-axes.grid(alpha=0.3)
+axes.grid("--",alpha=0.3)
 
 #plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 
-plt.legend()
+# plt.legend()
+
+box = axes.get_position()
+axes.set_position([box.x0, box.y0 + box.height * 0.10,
+                 box.width, box.height * 0.9])
+legd3 = axes.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+          fancybox=True, shadow=True, ncol=2)
+
+
+
 #axes.set_ylim((0,1.1))
 
 plt.subplots_adjust(hspace=0.9)
-plt.tight_layout()
+
+# plt.tight_layout()
 
 #plt.suptitle("$\\text{Solutions distribution for varying public parameter } W \\text{ order, } L_{PrK} = 5$",
 #             horizontalalignment='center', y=1)
 # save plot
-plt.savefig(r"C:\Users\a\Documents\projects\MPF-Python\Experiments\FullProbability\Figs\count_estimation.pdf")
+plt.savefig(r"C:\Users\a\Documents\projects\MPF-Python\Experiments\FullProbability\Figs\count_estimation.pdf",  bbox_extra_artists=(legd3,), bbox_inches='tight')
 
 figs.show()
 k = 4

@@ -2,21 +2,18 @@ import glob
 import os
 import pickle
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 from statsmodels.compat import scipy
 import scipy
 from scipy.optimize import curve_fit
 def get_approx_matrices_count(m, L_prk):
     return (L_prk**m - (L_prk - 1) ** m - L_prk) ** 2
+    # return (L_prk**m - (L_prk - 1) ** m) ** 2
 
-plt.rcParams['text.usetex'] = True
-plt.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}'] #for \text command
+plt.rcParams.update({'font.size': 26})
+plt.rc('text', usetex=True)
 
-
-    # read limit 5 and limit 8 results and produce plots
-sns.set_style("ticks")
-sns.set_context("talk")
+# read limit 5 and limit 8 results and produce plots
 def read_folder(folder_path):
     os.chdir(folder_path)
 
@@ -121,29 +118,43 @@ axes.set_xticks(range(2,6))
 #axes.semilogy(order8[::-1], upper_bound8, label="Upper bound of appropriate matrices, $L_{PrK} = 8$")
 #axes.fill_between(order8[::-1],means8,np.array(upper_bound8), label="Difference of numerical and analytical estimations with $L_{PrK} = 8$",alpha=0.1)
 
-axes.semilogy(order_5, prob_5[::-1], 's--',color="blue", label="Numerically estimated $p$, when $L_{PrK} = 5$")
-axes.semilogy(order_5, apprx_5, 's--',color="blue", alpha=0.2, label="Approximated $p = "+str(round(pars5[0], 2)) + "\cdot2^{-" + str(round(pars5[1], 2)) + " \cdot m}$, when $L_{PrK} = 5$")
+colors = ["#e6194b", "#3cb44b"]
+
+axes.semilogy(order_5, prob_5[::-1], '.--', color=colors[0], label="Numerically estimated $p$, when $L_{PrK} = 5$")
+# axes.semilogy(order_5, apprx_5, '.-', color=colors[0], alpha=0.5, label="Approximated $p = "+str(round(pars5[0], 2)) + "\cdot2^{-" + str(round(pars5[1], 2)) + " \cdot m}$, when $L_{PrK} = 5$")
+axes.semilogy(order_5, apprx_5, '.-', color=colors[0], alpha=0.5, label="Approximated $P(m)$, when $L_{PrK} = 5$")
 
 
-axes.semilogy(order_8, prob_8[::-1], '^--',color="red", label="Numerically estimated $p$, when $L_{PrK} = 8$")
-axes.semilogy(order_8, apprx_8, '^--',color="red", alpha=0.2,label="Approximated $p = "+str(round(pars8[0], 2)) + "\cdot2^{-" + str(round(pars8[1], 2)) + " \cdot m}$, when $L_{PrK} = 8$")
+axes.semilogy(order_8, prob_8[::-1],'x--',color=colors[1], label="Numerically estimated $p$, when $L_{PrK} = 8$")
+# axes.semilogy(order_8, apprx_8, 'x--',color=colors[1], alpha=0.5,label="Approximated $p = "+str(round(pars8[0], 2)) + "\cdot2^{-" + str(round(pars8[1], 2)) + " \cdot m}$, when $L_{PrK} = 8$")
+axes.semilogy(order_8, apprx_8, 'x--',color=colors[1], alpha=0.5,label="Approximated $P(m)$, when $L_{PrK} = 8$")
 
-axes.set_xlabel("$Order(W), x$")
-axes.set_ylabel("$P(x)$")
+axes.set_xlabel("$m$")
+axes.set_ylabel("$P(m)$")
 axes.grid(alpha=0.3)
+
+
 
 #plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 
-plt.legend()
+# plt.legend()
+box = axes.get_position()
+axes.set_position([box.x0, box.y0 + box.height * 0.10,
+                 box.width, box.height * 0.9])
+legd3 = axes.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+          fancybox=True, shadow=True, ncol=2)
+
+plt.tight_layout()
+
+
 #axes.set_ylim((0,1.1))
 
 plt.subplots_adjust(hspace=0.9)
-plt.tight_layout()
 
 #plt.suptitle("$\\text{Solutions distribution for varying public parameter } W \\text{ order, } L_{PrK} = 5$",
 #             horizontalalignment='center', y=1)
 # save plot
-#plt.savefig(r"C:\Users\a\Documents\projects\MPF-Python\Experiments\FullProbability\Figs\full_prob_estimation.pdf")
+plt.savefig(r"C:\Users\a\Documents\projects\MPF-Python\Experiments\FullProbability\Figs\full_prob_estimation.pdf", bbox_extra_artists=(legd3,), bbox_inches='tight')
 
 figs.show()
 k = 4
